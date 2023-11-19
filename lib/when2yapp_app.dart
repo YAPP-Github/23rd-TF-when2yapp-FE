@@ -12,6 +12,7 @@ class When2YappApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheduleCreatedPagePattern = RegExp(r'^/schedule/(\d+)/created$');
     final schedulePagePattern = RegExp(r'^/schedule/(\d+)$');
     final scheduleRegisterPagePattern = RegExp(r'^/schedule/(\d+)/register$');
     final scheduleDetailPagePattern = RegExp(r'^/schedule/(\d+)/detail$');
@@ -27,11 +28,10 @@ class When2YappApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith(
-              (states) => states.contains(MaterialState.selected)
-                ? const Color(0xFFFA6027)
-                : const Color(0xFFDBDBDB)
-          ),
+          fillColor: MaterialStateProperty.resolveWith((states) =>
+              states.contains(MaterialState.selected)
+                  ? const Color(0xFFFA6027)
+                  : const Color(0xFFDBDBDB)),
           checkColor: MaterialStateProperty.all(Colors.white),
           side: BorderSide.none,
         ),
@@ -45,15 +45,19 @@ class When2YappApp extends StatelessWidget {
           );
         }
         if (settings.name! == '/create') {
-          final queryParameters = Uri.parse(settings.name!).queryParameters;
           return MaterialPageRoute(
             builder: (context) => CreatePage(),
           );
         }
-        if (settings.name! == '/created') {
-          final queryParameters = Uri.parse(settings.name!).queryParameters;
+        if (scheduleCreatedPagePattern.hasMatch(settings.name!)) {
+          var scheduleId = int.parse(scheduleCreatedPagePattern
+              .allMatches(settings.name!)
+              .first
+              .group(1)!);
           return MaterialPageRoute(
-            builder: (context) => CreatedPage(),
+            builder: (context) => CreatedPage(
+              scheduleId: scheduleId,
+            ),
           );
         }
         if (schedulePagePattern.hasMatch(settings.name!)) {
@@ -71,7 +75,8 @@ class When2YappApp extends StatelessWidget {
             builder: (context) => ScheduleDetailPage(),
           );
         }
-        throw Exception('\'settings.name\' is not valid. name: ${settings.name}');
+        throw Exception(
+            '\'settings.name\' is not valid. name: ${settings.name}');
       },
     );
   }
