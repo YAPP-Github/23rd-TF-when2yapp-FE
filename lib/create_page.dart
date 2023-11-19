@@ -81,7 +81,7 @@ class CreatePageState extends State<CreatePage> {
           onPressed: () async {
             final scheduleResponse = await widget._apiClient.createSchedule(
               startDate: DateTime(2023, 11, 8),
-              endDate: DateTime(2023, 11, 12),
+              endDate: DateTime(2023, 11, 15),
               startTime: '10:00:00',
               endTime: '22:00:00',
             );

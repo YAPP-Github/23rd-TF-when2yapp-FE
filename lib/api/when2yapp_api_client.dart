@@ -38,7 +38,22 @@ class When2YappApiClient {
           .then((value) => ScheduleResponse.fromJson(value));
 
   /// 약속 조회
-  Future<void> getSchedule(int scheduleId) async {}
+  Future<ScheduleResponse> getSchedule({
+    required int scheduleId,
+  }) async =>
+      http
+          .get(
+            Uri.http(
+              host,
+              '/schedule/$scheduleId',
+            ),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+          )
+          .then((value) => jsonDecode(utf8.decode(value.bodyBytes)))
+          .then((value) => ScheduleResponse.fromJson(value));
 
   /// 응답 주체 생성
   Future<void> createRespondent() async {}
