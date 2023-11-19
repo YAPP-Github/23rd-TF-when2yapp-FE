@@ -8,34 +8,34 @@ class When2YappApiClient {
   final String host = '43.201.181.142:8000';
 
   /// 약속 생성
-  Future<ScheduleResponse?> createSchedule({
+  Future<ScheduleResponse> createSchedule({
     required DateTime startDate,
     required DateTime endDate,
     required String startTime,
     required String endTime,
-  }) async {
-    return http
-        .post(
-          Uri.http(
-            host,
-            '/schedule/',
-          ),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(
-            {
-              'name': '',
-              'start_date': startDate.toIso8601String(),
-              'end_date': endDate.toIso8601String(),
-              'start_time': startTime,
-              'end_time': endTime,
+  }) async =>
+      http
+          .post(
+            Uri.http(
+              host,
+              '/schedule/',
+            ),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json; charset=UTF-8',
             },
-          ),
-        )
-        .then((value) => jsonDecode(utf8.decode(value.bodyBytes)))
-        .then((value) => ScheduleResponse.fromJson(value));
-  }
+            body: jsonEncode(
+              {
+                'name': 'name',
+                'start_date': startDate.toIso8601String(),
+                'end_date': endDate.toIso8601String(),
+                'start_time': startTime,
+                'end_time': endTime,
+              },
+            ),
+          )
+          .then((value) => jsonDecode(utf8.decode(value.bodyBytes)))
+          .then((value) => ScheduleResponse.fromJson(value));
 
   /// 약속 조회
   Future<void> getSchedule(int scheduleId) async {}

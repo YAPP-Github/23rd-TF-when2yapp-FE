@@ -4,6 +4,7 @@ class ScheduleResponse {
   final int id;
   final DateTime startDate;
   final DateTime endDate;
+
   /// 'HH:mm:ss'
   final String startTime;
   final String endTime;
@@ -23,7 +24,15 @@ class ScheduleResponse {
       json['endTime'],
       DateTime.parse(json['createdAt']),
       DateTime.parse(json['updatedAt']),
-      json['selectedSchedules'].map<SelectedScheduleResponse>((e) => SelectedScheduleResponse.fromJson(e)).toList(),
+      json['selectedSchedules']
+          .map<SelectedScheduleResponse>(
+              (e) => SelectedScheduleResponse.fromJson(e))
+          .toList(),
     );
+  }
+
+  @override
+  String toString() {
+    return 'ScheduleResponse{id: $id, startDate: $startDate, endDate: $endDate, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt, selectedSchedules: $selectedSchedules}';
   }
 }

@@ -19,4 +19,9 @@ class SelectedScheduleResponse {
           .toList(),
     );
   }
+
+  @override
+  String toString() {
+    return 'SelectedScheduleResponse{id: $id, scheduleId: $scheduleId, username: $username, availabilities: $availabilities}';
+  }
 }

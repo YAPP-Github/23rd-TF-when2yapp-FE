@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:when2yapp/component/dash_widget.dart';
 
 class CreatedPage extends StatelessWidget {
-  const CreatedPage({super.key});
+  const CreatedPage({
+    super.key,
+    required this.scheduleId,
+  });
+
+  final int scheduleId;
 
   @override
   Widget build(BuildContext context) {

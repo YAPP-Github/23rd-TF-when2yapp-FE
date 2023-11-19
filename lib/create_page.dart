@@ -1,11 +1,12 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:when2yapp/api/when2yapp_api_client.dart';
 
 import 'component/when2yapp_checkbox.dart';
 
 class CreatePage extends StatefulWidget {
-
+  final When2YappApiClient _apiClient = When2YappApiClient();
   final List<TimeOption> timeOptions = [
     TimeOption(
       timeSlotName: '아침',
@@ -77,8 +78,19 @@ class CreatePageState extends State<CreatePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('/created');
+          onPressed: () async {
+            final scheduleResponse = await widget._apiClient.createSchedule(
+              startDate: DateTime(2023, 11, 8),
+              endDate: DateTime(2023, 11, 12),
+              startTime: '10:00:00',
+              endTime: '22:00:00',
+            );
+            if (!mounted) {
+              return;
+            }
+            print('schedule: $scheduleResponse');
+            Navigator.of(context)
+                .pushNamed('/schedule/${scheduleResponse.id}/created');
           },
           tooltip: '약속 만들기',
           child: const Icon(Icons.chevron_right),
@@ -141,13 +153,13 @@ class CreatePageState extends State<CreatePage> {
     return Wrap(
       direction: Axis.horizontal,
       runSpacing: 14,
-      children: widget.timeOptions.map((e) => _buildTimeSelector(timeOption: e)).toList(),
+      children: widget.timeOptions
+          .map((e) => _buildTimeSelector(timeOption: e))
+          .toList(),
     );
   }
 
-  Widget _buildTimeSelector({
-    required TimeOption timeOption
-  }) {
+  Widget _buildTimeSelector({required TimeOption timeOption}) {
     return When2YappCheckBox(
       textLabel: timeOption.getFormattedText(),
     );

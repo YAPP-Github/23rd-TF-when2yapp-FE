@@ -15,4 +15,9 @@ class AvailabilityResponse {
       DateTime.parse(json['endTime']),
     );
   }
+
+  @override
+  String toString() {
+    return 'AvailabilityResponse{id: $id, selectedScheduleId: $selectedScheduleId, startTime: $startTime, endTime: $endTime}';
+  }
 }
