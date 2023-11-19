@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:when2yapp/api/when2yapp_api_client.dart';
 import 'package:when2yapp/component/dash_widget.dart';
 
+import 'api/dto/schedule_response.dart';
+
 class CreatedPage extends StatelessWidget {
-  const CreatedPage({
+  CreatedPage({
     super.key,
     required this.scheduleId,
   });
 
+  final When2YappApiClient _apiClient = When2YappApiClient();
   final int scheduleId;
 
   @override
@@ -39,55 +44,7 @@ class CreatedPage extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Column(
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("약속 안내",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          color: Colors.black)),
-                ),
-                SizedBox(height: 18),
-                DashWidget(
-                  color: Color(0xFFA09DA5),
-                  height: 0.6,
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Text("날짜",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                            color: Color(0xFFA09DA5))),
-                    SizedBox(width: 18),
-                    Text("11월 8일 - 15일",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Colors.black))
-                  ],
-                ),
-                SizedBox(height: 14),
-                Row(
-                  children: [
-                    Text("시간",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                            color: Color(0xFFA09DA5))),
-                    SizedBox(width: 18),
-                    Text("12:00 - 22:00",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Colors.black))
-                  ],
-                )
-              ],
-            ),
+            child: _buildScheduleInformation(),
           )),
           const Spacer(),
           Container(
@@ -139,5 +96,84 @@ class CreatedPage extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  /// 약속 안내
+  Widget _buildScheduleInformation() {
+    return FutureBuilder<ScheduleResponse>(
+        future: _apiClient.getSchedule(scheduleId: scheduleId),
+        builder: (context, asyncSnapshot) {
+          if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (asyncSnapshot.hasError || !asyncSnapshot.hasData) {
+            return Container();
+          }
+          final scheduleResponse = asyncSnapshot.data!;
+          final startDate = scheduleResponse.startDate;
+          final endDate = scheduleResponse.endDate;
+          final startTime = scheduleResponse.startTime;
+          final endTime = scheduleResponse.endTime;
+          final formattedDateRange = _getFormattedDateRange(startDate, endDate);
+
+          return Column(
+            children: [
+              const Align(
+                alignment: Alignment.topLeft,
+                child: Text("약속 안내",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        color: Colors.black)),
+              ),
+              const SizedBox(height: 18),
+              const DashWidget(
+                color: Color(0xFFA09DA5),
+                height: 0.6,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  const Text("날짜",
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: Color(0xFFA09DA5))),
+                  const SizedBox(width: 18),
+                  Text(formattedDateRange,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black))
+                ],
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  const Text("시간",
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: Color(0xFFA09DA5))),
+                  const SizedBox(width: 18),
+                  Text(
+                      '${startTime.substring(0, 5)} - ${endTime.substring(0, 5)}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black))
+                ],
+              )
+            ],
+          );
+        });
+  }
+
+  String _getFormattedDateRange(DateTime startDate, DateTime endDate) {
+    if (startDate.month == endDate.month) {
+      return '${DateFormat('M월 d일').format(startDate)} - ${DateFormat('d일').format(endDate)}';
+    } else {
+      return '${DateFormat('M월 d일').format(startDate)} - ${DateFormat('M월 d일').format(endDate)}';
+    }
   }
 }
