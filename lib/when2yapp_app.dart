@@ -19,7 +19,22 @@ class When2YappApp extends StatelessWidget {
     return MaterialApp(
       title: '언제얍',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFEDFD4)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFEDFD4)),
+        scaffoldBackgroundColor: const Color(0xFFF5F8F8),
+        appBarTheme: const AppBarTheme(
+          color: Color(0xFFF5F8F8),
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith(
+              (states) => states.contains(MaterialState.selected)
+                ? const Color(0xFFFA6027)
+                : const Color(0xFFDBDBDB)
+          ),
+          checkColor: MaterialStateProperty.all(Colors.white),
+          side: BorderSide.none,
+        ),
         useMaterial3: true,
       ),
       initialRoute: '/',
