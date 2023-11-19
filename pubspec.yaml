@@ -65,6 +65,8 @@ flutter:
   assets:
     - assets/yappucongrats.png
     - assets/yappucalendar.png
+    - assets/splashbackground.png
+    - assets/splashchip.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
