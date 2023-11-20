@@ -35,6 +35,7 @@ class When2YappApp extends StatelessWidget {
           checkColor: MaterialStateProperty.all(Colors.white),
           side: BorderSide.none,
         ),
+        fontFamily: 'Pretendard',
         useMaterial3: true,
       ),
       initialRoute: '/',
