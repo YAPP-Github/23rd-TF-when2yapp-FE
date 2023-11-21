@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dto/schedule_response.dart';
 
 class When2YappApiClient {
-  final String host = '43.201.181.142:8000';
+  final String host = 'api.when2yapp.com';
 
   /// 약속 생성
   Future<ScheduleResponse> createSchedule({
@@ -16,7 +16,7 @@ class When2YappApiClient {
   }) async =>
       http
           .post(
-            Uri.http(
+            Uri.https(
               host,
               '/schedule/',
             ),
@@ -43,7 +43,7 @@ class When2YappApiClient {
   }) async =>
       http
           .get(
-            Uri.http(
+            Uri.https(
               host,
               '/schedule/$scheduleId',
             ),
