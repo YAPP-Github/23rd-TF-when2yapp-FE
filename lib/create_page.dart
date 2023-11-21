@@ -58,7 +58,7 @@ class CreatePage extends StatefulWidget {
 class CreatePageState extends State<CreatePage> {
   List<DateTime?> _rangeDatePickerValueWithDefaultValue = [
     DateTime.now(),
-    DateTime.now().add(const Duration(days: 6))
+    DateTime.now().add(const Duration(days: 6)),
   ];
 
   @override
@@ -71,9 +71,16 @@ class CreatePageState extends State<CreatePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('날짜와 시간을 정해주세요'),
+              const Text(
+                '날짜와 시간을 정해주세요',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 18),
               _buildDefaultRangeDatePickerWithValue(),
-              _buildTimeSelectors()
+              _buildTimeSelectors(),
             ],
           ),
         ),
@@ -103,28 +110,36 @@ class CreatePageState extends State<CreatePage> {
     final config = CalendarDatePicker2Config(
       calendarType: CalendarDatePicker2Type.range,
       weekdayLabelTextStyle: const TextStyle(
-        color: Colors.black87,
+        color: Color(0xFF101010),
+        fontSize: 17,
         fontWeight: FontWeight.bold,
       ),
       controlsTextStyle: const TextStyle(
         color: Colors.black,
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
+        fontSize: 17,
       ),
       dayTextStyle: const TextStyle(
         color: Color(0xFFA09DA5),
-        fontWeight: FontWeight.bold,
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
       ),
       selectedDayTextStyle: const TextStyle(
         color: Colors.white,
-        fontWeight: FontWeight.bold,
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
       ),
       selectedDayHighlightColor: const Color(0xFFFA6027),
       selectedRangeDayTextStyle: const TextStyle(
         color: Color(0xFFFA6027),
-        fontWeight: FontWeight.bold,
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
       ),
       selectedRangeHighlightColor: const Color(0xFFFEDFD4),
+      todayTextStyle: const TextStyle(
+        color: Color(0xFFFA6027),
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+      ),
       weekdayLabels: [
         '일',
         '월',
