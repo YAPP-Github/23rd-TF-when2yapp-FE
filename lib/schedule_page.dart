@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'resources/resources.dart';
+
 class SchedulePageWidget extends StatefulWidget {
   @override
   SchedulePage createState() => SchedulePage();
@@ -129,7 +131,7 @@ class SchedulePage extends State<SchedulePageWidget> {
                 alignment: AlignmentDirectional.bottomEnd,
                 child: Container(
                     margin: const EdgeInsets.fromLTRB(0, 0, 18, 30),
-                    child: Image.asset('assets/yappucalendar.png')),
+                    child: Image.asset(Images.yappucalendar)),
               ),
               Container(
                 width: double.infinity,

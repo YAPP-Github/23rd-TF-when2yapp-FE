@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'resources/resources.dart';
+
 class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class SplashPage extends StatelessWidget {
           Container(
               margin: const EdgeInsets.fromLTRB(0, 40, 0, 130),
               width: double.infinity,
-              child: Image.asset('assets/splashbackground.png')),
+              child: Image.asset(Images.splashbackground)),
           Column(
             children: [
               Container(
@@ -40,7 +42,7 @@ class SplashPage extends StatelessWidget {
                   ),
                   Container(
                       margin: const EdgeInsets.fromLTRB(8, 4, 0, 0),
-                      child: Image.asset('assets/splashchip.png'))
+                      child: Image.asset(Images.splashchip))
                 ],
               ),
             ],
