@@ -57,7 +57,7 @@ class When2YappCheckBoxState extends State<When2YappCheckBox> {
               const Spacer(),
               Checkbox(
                 value: _isSelected,
-                onChanged: (bool? value) {},
+                onChanged: null,
               ),
             ],
           ),
