@@ -4,6 +4,7 @@ import 'package:when2yapp/api/when2yapp_api_client.dart';
 import 'package:when2yapp/component/dash_widget.dart';
 
 import 'api/dto/schedule_response.dart';
+import 'resources/resources.dart';
 
 class CreatedPage extends StatelessWidget {
   CreatedPage({
@@ -34,7 +35,7 @@ class CreatedPage extends StatelessWidget {
                 fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
           )),
           const SizedBox(height: 20),
-          Center(child: Image.asset('assets/yappucongrats.png')),
+          Center(child: Image.asset(Images.yappucongrats)),
           Center(
               child: Container(
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
