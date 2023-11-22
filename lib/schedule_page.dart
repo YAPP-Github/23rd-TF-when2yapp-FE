@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 
+import 'api/dto/schedule_response.dart';
+import 'api/when2yapp_api_client.dart';
+import 'util/date_time_utils.dart';
 import 'resources/resources.dart';
 
 class SchedulePageWidget extends StatefulWidget {
+
+  final int scheduleId;
+  final When2YappApiClient _apiClient = When2YappApiClient();
+
+  SchedulePageWidget({
+    super.key,
+    required this.scheduleId,
+  });
+
   @override
   SchedulePage createState() => SchedulePage();
 }
@@ -41,51 +53,7 @@ class SchedulePage extends State<SchedulePageWidget> {
                         fontSize: 17,
                         color: Colors.black)),
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 26, vertical: 22),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text("날짜",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Color(0xFFA09DA5))),
-                        SizedBox(width: 18),
-                        Text("11월 8일 - 15일",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.black))
-                      ],
-                    ),
-                    SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Text("시간",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Color(0xFFA09DA5))),
-                        SizedBox(width: 18),
-                        Text("12:00 - 22:00",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.black))
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              _buildScheduleInfo(),
               Container(
                 alignment: Alignment.topLeft,
                 margin: const EdgeInsets.fromLTRB(20, 20, 20, 14),
@@ -138,13 +106,7 @@ class SchedulePage extends State<SchedulePageWidget> {
                 height: 56,
                 margin: const EdgeInsets.fromLTRB(20, 0, 20, 60),
                 child: TextButton(
-                  onPressed: _isValidName()
-                      ? () {
-                          const scheduleId = 1;
-                          Navigator.of(context)
-                              .pushNamed('/schedule/$scheduleId/register');
-                        }
-                      : null,
+                  onPressed: _onRegisterButtonPressed(),
                   style: TextButton.styleFrom(
                       disabledBackgroundColor: const Color(0xFFEEECF3),
                       disabledForegroundColor: const Color(0xFFA09DA5),
@@ -161,5 +123,96 @@ class SchedulePage extends State<SchedulePageWidget> {
             ],
           )),
     );
+  }
+
+  Widget _buildScheduleInfo() {
+    return FutureBuilder<ScheduleResponse>(
+      future: widget._apiClient.getSchedule(scheduleId: widget.scheduleId),
+      builder: (context, asyncSnapshot) {
+        if (asyncSnapshot.hasData) {
+          final scheduleResponse = asyncSnapshot.data!;
+          return _buildScheduleMetadata(
+            dateRangeText: DateTimeUtils.getFormattedDateRangeText(
+              startDate: scheduleResponse.startDate,
+              endDate: scheduleResponse.endDate,
+            ),
+            timeRangeText: DateTimeUtils.getFormattedTimeRangeText(
+                startTime: scheduleResponse.startTime,
+                endTime: scheduleResponse.endTime,
+            ),
+          );
+        }
+        return _buildScheduleMetadata();
+      },
+    );
+  }
+
+  Widget _buildScheduleMetadata({
+    String? dateRangeText,
+    String? timeRangeText,
+  }) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      padding:
+      const EdgeInsets.symmetric(horizontal: 26, vertical: 22),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Text("날짜",
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Color(0xFFA09DA5))),
+              const SizedBox(width: 18),
+              Text(dateRangeText ?? '',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black))
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              const Text("시간",
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Color(0xFFA09DA5))),
+              const SizedBox(width: 18),
+              Text(timeRangeText ?? '',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  VoidCallback? _onRegisterButtonPressed() {
+    if (!_isValidName()) {
+      return null;
+    }
+    return () async {
+      // FIXME: 항상 만들지 말고, 이미 스케줄에 동일한 이름이 등록되어있으면 그 이름의 식별자를 써야함.
+      final selectedScheduleResponse = await widget._apiClient.createRespondent(
+        scheduleId: widget.scheduleId,
+        name: _nameTextFieldController.text,
+      );
+      if (!mounted) {
+        return;
+      }
+      Navigator.of(context).pushNamed(
+          '/schedule/${widget.scheduleId}/register/${selectedScheduleResponse.id}');
+    };
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:when2yapp/api/when2yapp_api_client.dart';
 import 'package:when2yapp/component/dash_widget.dart';
 
 import 'api/dto/schedule_response.dart';
 import 'resources/resources.dart';
+import 'util/date_time_utils.dart';
 
 class CreatedPage extends StatelessWidget {
   CreatedPage({
@@ -77,7 +77,6 @@ class CreatedPage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 60),
             child: OutlinedButton(
               onPressed: () {
-                const scheduleId = 1;
                 Navigator.of(context).pushNamed('/schedule/$scheduleId');
               },
               style: OutlinedButton.styleFrom(
@@ -116,6 +115,10 @@ class CreatedPage extends StatelessWidget {
           final startTime = scheduleResponse.startTime;
           final endTime = scheduleResponse.endTime;
           final formattedDateRange = _getFormattedDateRange(startDate, endDate);
+          final formattedTimeRange = DateTimeUtils.getFormattedTimeRangeText(
+            startTime: startTime,
+            endTime: endTime,
+          );
 
           return Column(
             children: [
@@ -158,7 +161,7 @@ class CreatedPage extends StatelessWidget {
                           color: Color(0xFFA09DA5))),
                   const SizedBox(width: 18),
                   Text(
-                      '${startTime.substring(0, 5)} - ${endTime.substring(0, 5)}',
+                      formattedTimeRange,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
@@ -171,10 +174,9 @@ class CreatedPage extends StatelessWidget {
   }
 
   String _getFormattedDateRange(DateTime startDate, DateTime endDate) {
-    if (startDate.month == endDate.month) {
-      return '${DateFormat('M월 d일').format(startDate)} - ${DateFormat('d일').format(endDate)}';
-    } else {
-      return '${DateFormat('M월 d일').format(startDate)} - ${DateFormat('M월 d일').format(endDate)}';
-    }
+    return DateTimeUtils.getFormattedDateRangeText(
+        startDate: startDate,
+        endDate: endDate,
+    );
   }
 }

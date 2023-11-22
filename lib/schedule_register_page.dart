@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:when2yapp/component/when2yapp_time_table.dart';
 
 class ScheduleRegisterPage extends StatelessWidget {
-  final int scheduleId = 1;
+  final int scheduleId;
+  final int selectedScheduleId;
+
+  ScheduleRegisterPage({
+    required this.scheduleId,
+    required this.selectedScheduleId,
+  });
+
   final DateTime startDate = DateTime.now();
   final DateTime endDate = DateTime.now().add(const Duration(days: 6));
 
