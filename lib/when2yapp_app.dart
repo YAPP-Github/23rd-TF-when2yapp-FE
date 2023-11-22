@@ -14,7 +14,7 @@ class When2YappApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheduleCreatedPagePattern = RegExp(r'^/schedule/(\d+)/created$');
     final schedulePagePattern = RegExp(r'^/schedule/(\d+)$');
-    final scheduleRegisterPagePattern = RegExp(r'^/schedule/(\d+)/register$');
+    final scheduleRegisterPagePattern = RegExp(r'^/schedule/(\d+)/register/(\d+)$');
     final scheduleDetailPagePattern = RegExp(r'^/schedule/(\d+)/detail$');
 
     return MaterialApp(
@@ -51,7 +51,7 @@ class When2YappApp extends StatelessWidget {
           );
         }
         if (scheduleCreatedPagePattern.hasMatch(settings.name!)) {
-          var scheduleId = int.parse(scheduleCreatedPagePattern
+          final scheduleId = int.parse(scheduleCreatedPagePattern
               .allMatches(settings.name!)
               .first
               .group(1)!);
@@ -62,13 +62,25 @@ class When2YappApp extends StatelessWidget {
           );
         }
         if (schedulePagePattern.hasMatch(settings.name!)) {
+          final scheduleId = int.parse(schedulePagePattern
+              .allMatches(settings.name!)
+              .first
+              .group(1)!);
           return MaterialPageRoute(
-            builder: (context) => SchedulePageWidget(),
+            builder: (context) => SchedulePageWidget(
+              scheduleId: scheduleId,
+            ),
           );
         }
         if (scheduleRegisterPagePattern.hasMatch(settings.name!)) {
+          final matches = schedulePagePattern
+              .allMatches(settings.name!)
+              .first;
           return MaterialPageRoute(
-            builder: (context) => ScheduleRegisterPage(),
+            builder: (context) => ScheduleRegisterPage(
+              scheduleId: int.parse(matches.group(1)!),
+              selectedScheduleId: int.parse(matches.group(2)!),
+            ),
           );
         }
         if (scheduleDetailPagePattern.hasMatch(settings.name!)) {
