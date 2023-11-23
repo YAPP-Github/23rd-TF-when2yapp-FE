@@ -15,7 +15,7 @@ class When2YappApp extends StatelessWidget {
     final scheduleCreatedPagePattern = RegExp(r'^/schedule/(\d+)/created$');
     final schedulePagePattern = RegExp(r'^/schedule/(\d+)$');
     final scheduleRegisterPagePattern = RegExp(r'^/schedule/(\d+)/register/(\d+)$');
-    final scheduleDetailPagePattern = RegExp(r'^/schedule/(\d+)/detail$');
+    final scheduleDetailPagePattern = RegExp(r'^/schedule/(\d+)/detail/(\d+)$');
 
     return MaterialApp(
       title: '언제얍',
@@ -84,8 +84,14 @@ class When2YappApp extends StatelessWidget {
           );
         }
         if (scheduleDetailPagePattern.hasMatch(settings.name!)) {
+          final matches = scheduleDetailPagePattern
+              .allMatches(settings.name!)
+              .first;
           return MaterialPageRoute(
-            builder: (context) => ScheduleDetailPage(),
+            builder: (context) => ScheduleDetailPage(
+              scheduleId: int.parse(matches.group(1)!),
+              selectedScheduleId: int.parse(matches.group(2)!),
+            ),
           );
         }
         throw Exception(

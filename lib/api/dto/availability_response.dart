@@ -11,8 +11,8 @@ class AvailabilityResponse {
     return AvailabilityResponse(
       json['id'],
       json['selectedScheduleId'],
-      DateTime.parse(json['startTime']),
-      DateTime.parse(json['endTime']),
+      DateTime.parse(json['startTime']).toLocal(),
+      DateTime.parse(json['endTime']).toLocal(),
     );
   }
 

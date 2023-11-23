@@ -1,8 +1,9 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:when2yapp/api/when2yapp_api_client.dart';
 
+import 'api/when2yapp_api_client.dart';
 import 'component/when2yapp_checkbox.dart';
 
 class CreatePage extends StatefulWidget {
@@ -56,10 +57,17 @@ class CreatePage extends StatefulWidget {
 }
 
 class CreatePageState extends State<CreatePage> {
-  List<DateTime?> _rangeDatePickerValueWithDefaultValue = [
-    DateTime.now(),
-    DateTime.now().add(const Duration(days: 6)),
-  ];
+  final DateTime _today = DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  List<DateTime?> _rangeDatePickerValueWithDefaultValue = [];
+
+  @override
+  void initState() {
+    _rangeDatePickerValueWithDefaultValue = [
+      _today,
+      _today.add(const Duration(days: 6)),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +103,9 @@ class CreatePageState extends State<CreatePage> {
             if (!mounted) {
               return;
             }
-            print('schedule: $scheduleResponse');
+            if (kDebugMode) {
+              print('schedule: $scheduleResponse');
+            }
             Navigator.of(context)
                 .pushNamed('/schedule/${scheduleResponse.id}/created');
           },
