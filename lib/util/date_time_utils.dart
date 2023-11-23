@@ -29,9 +29,9 @@ class DateTimeUtils {
     required DateTime endDate,
   }) {
     if (startDate.month == endDate.month) {
-      return '${DateFormat('M월 d일').format(startDate)} - ${DateFormat('d일').format(endDate)}';
+      return '${DateFormat('M월 d일').format(startDate.toLocal())} - ${DateFormat('d일').format(endDate.toLocal())}';
     } else {
-      return '${DateFormat('M월 d일').format(startDate)} - ${DateFormat('M월 d일').format(endDate)}';
+      return '${DateFormat('M월 d일').format(startDate.toLocal())} - ${DateFormat('M월 d일').format(endDate.toLocal())}';
     }
   }
 

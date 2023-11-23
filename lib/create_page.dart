@@ -87,8 +87,8 @@ class CreatePageState extends State<CreatePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final scheduleResponse = await widget._apiClient.createSchedule(
-              startDate: DateTime(2023, 11, 8),
-              endDate: DateTime(2023, 11, 15),
+              startDate: _rangeDatePickerValueWithDefaultValue[0]!,
+              endDate: _rangeDatePickerValueWithDefaultValue[1]!,
               startTime: '10:00:00',
               endTime: '22:00:00',
             );
