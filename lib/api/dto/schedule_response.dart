@@ -18,12 +18,12 @@ class ScheduleResponse {
   factory ScheduleResponse.fromJson(Map<String, dynamic> json) {
     return ScheduleResponse(
       json['id'],
-      DateTime.parse(json['startDate']),
-      DateTime.parse(json['endDate']),
+      DateTime.parse(json['startDate']).toLocal(),
+      DateTime.parse(json['endDate']).toLocal(),
       json['startTime'],
       json['endTime'],
-      DateTime.parse(json['createdAt']),
-      DateTime.parse(json['updatedAt']),
+      DateTime.parse(json['createdAt']).toLocal(),
+      DateTime.parse(json['updatedAt']).toLocal(),
       json['selectedSchedules']
           .map<SelectedScheduleResponse>(
               (e) => SelectedScheduleResponse.fromJson(e))

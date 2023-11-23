@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:when2yapp/util/when2yapp_time.dart';
 
 import '../util/date_time_utils.dart';
+import '../util/when2yapp_time.dart';
 
 class When2YappTimeTable extends StatefulWidget {
+  // 날짜
   final List<DateTime> dateTimes;
   final int columnSize = 5;
   final bool isEditable;
+  final ValueNotifier<List<DateTime>> selectedDateTimesNotifier;
+  List<DateTime>? selectedDateTimes;
   static const double headerHeight = 54.0;
   static const double cellWidth = 54.0;
   static const double cellHeight = 22.0;
@@ -14,6 +17,8 @@ class When2YappTimeTable extends StatefulWidget {
   When2YappTimeTable({
     required this.dateTimes,
     required this.isEditable,
+    required this.selectedDateTimesNotifier,
+    this.selectedDateTimes,
   });
 
   @override
@@ -23,6 +28,7 @@ class When2YappTimeTable extends StatefulWidget {
 }
 
 class _When2YappTimeTableState extends State<When2YappTimeTable> {
+  // 선택된 시간 목록
   late List<DateTime> selectedStartDateTimes;
   late int limit;
   late int offset;
@@ -30,7 +36,7 @@ class _When2YappTimeTableState extends State<When2YappTimeTable> {
   @override
   void initState() {
     super.initState();
-    selectedStartDateTimes = [];
+    selectedStartDateTimes = widget.selectedDateTimes ?? [];
     limit = widget.columnSize;
     offset = 0;
   }
@@ -66,6 +72,7 @@ class _When2YappTimeTableState extends State<When2YappTimeTable> {
                 } else {
                   selectedStartDateTimes.add(dateTime);
                 }
+                widget.selectedDateTimesNotifier.value = selectedStartDateTimes;
               });
             }
           },
@@ -157,7 +164,11 @@ class _TimeSelector extends StatelessWidget {
       children: [
         _buildColumnTitle(),
         for (var i = offset; i < offset + limit; i++)
-          _buildDayColumn(dateTimes[i]),
+          _buildDayColumn(
+              dateTimes[i],
+              updateSelectedDateTimesCallback,
+              hasDateTimeCallback,
+          ),
       ],
     );
   }
@@ -177,13 +188,14 @@ class _TimeSelector extends StatelessWidget {
 
   Widget _buildDayColumn(
     DateTime dateTime,
+    UpdateSelectedDateTimesCallback? updateSelectedDateTimesCallback,
+    HasDateTimeCallback? hasDateTimeCallback,
   ) {
     return Column(
       children: [
         for (var i = startTime; i <= endTime; i = i.addMinute(30))
           _buildCell(
-            dateTime,
-            i,
+            dateTime.add(Duration(hours: i.hour, minutes: i.minute)),
             updateSelectedDateTimesCallback,
             hasDateTimeCallback,
           ),
@@ -191,56 +203,74 @@ class _TimeSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildCell(
+  _When2YappTimeTableCell _buildCell(
     DateTime dateTime,
-    When2YappTime startTime,
     UpdateSelectedDateTimesCallback? updateSelectedDateTimesCallback,
     HasDateTimeCallback? hasDateTimeCallback,
   ) {
     return _When2YappTimeTableCell(
-      startTime: startTime,
-      isSelected: hasDateTimeCallback?.call(dateTime.copyWith(
-            hour: startTime.hour,
-            minute: startTime.minute,
-          )) ??
-          false,
-      onTapDown: (_) {
-        print('dateTime: $dateTime, startTime: $startTime');
-        updateSelectedDateTimesCallback?.call(dateTime.copyWith(
-          hour: startTime.hour,
-          minute: startTime.minute,
-        ));
-      },
+      startTime: dateTime,
+      isSelected: hasDateTimeCallback?.call(dateTime) ?? false,
+      updateSelectedDateTimesCallback: updateSelectedDateTimesCallback,
     );
   }
 }
 
-class _When2YappTimeTableCell extends StatelessWidget {
-  final When2YappTime startTime;
+class _When2YappTimeTableCell extends StatefulWidget {
+  final DateTime startTime;
   final bool isSelected;
-  final GestureTapDownCallback? onTapDown;
+  final UpdateSelectedDateTimesCallback? updateSelectedDateTimesCallback;
 
   _When2YappTimeTableCell({
     required this.startTime,
     required this.isSelected,
-    this.onTapDown,
+    required this.updateSelectedDateTimesCallback,
   });
 
   @override
+  State<StatefulWidget> createState() {
+    return _When2YappTimeTableCellState();
+  }
+}
+
+class _When2YappTimeTableCellState extends State<_When2YappTimeTableCell> {
+  bool selected = false;
+
+  @override
+  void initState() {
+    selected = widget.isSelected;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: onTapDown,
-      child: SizedBox(
-        height: When2YappTimeTable.cellHeight,
-        width: When2YappTimeTable.cellWidth,
-        child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey,
+    return MouseRegion(
+      onEnter: (event) {
+        if (event.down) {
+          setState(() {
+            selected = !selected;
+            widget.updateSelectedDateTimesCallback?.call(widget.startTime);
+          });
+        }
+      },
+      child: GestureDetector(
+        onTapDown: (_) {
+          setState(() {
+            selected = !selected;
+          });
+        },
+        child: SizedBox(
+          height: When2YappTimeTable.cellHeight,
+          width: When2YappTimeTable.cellWidth,
+          child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                ),
               ),
-            ),
-            child:
-                isSelected ? Container(color: const Color(0xFFFA6027)) : null),
+              child:
+              selected ? Container(color: const Color(0xFFFA6027)) : null),
+        ),
       ),
     );
   }
