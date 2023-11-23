@@ -274,18 +274,6 @@ class _When2YappTimeTableCellState extends State<_When2YappTimeTableCell> {
       ),
     );
   }
-
-  bool _contains(BuildContext context, Offset target) {
-    final renderBox = context.findRenderObject() as RenderBox;
-    final Rect rect = Rect.fromPoints(
-        renderBox.localToGlobal(Offset.zero),
-        renderBox.localToGlobal(const Offset(
-            When2YappTimeTable.cellWidth,
-            When2YappTimeTable.cellHeight
-        ))
-    );
-    return rect.contains(target);
-  }
 }
 
 /// dateTime 이 현재 선택된 시간 목록에 있으면 삭제, 없으면 추가합니다.
