@@ -73,7 +73,7 @@ class When2YappApp extends StatelessWidget {
           );
         }
         if (scheduleRegisterPagePattern.hasMatch(settings.name!)) {
-          final matches = schedulePagePattern
+          final matches = scheduleRegisterPagePattern
               .allMatches(settings.name!)
               .first;
           return MaterialPageRoute(
