@@ -57,7 +57,8 @@ class CreatePage extends StatefulWidget {
 }
 
 class CreatePageState extends State<CreatePage> {
-  final DateTime _today = DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  final DateTime _today = DateTime.now()
+      .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
   List<DateTime?> _rangeDatePickerValueWithDefaultValue = [];
 
   @override
@@ -74,22 +75,25 @@ class CreatePageState extends State<CreatePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '날짜와 시간을 정해주세요',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '날짜와 시간을 정해주세요',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 18),
-              _buildDefaultRangeDatePickerWithValue(),
-              _buildTimeSelectors(),
-            ],
+                const SizedBox(height: 18),
+                _buildDefaultRangeDatePickerWithValue(),
+                _buildTimeSelectors(),
+                const SizedBox(height: 100),
+              ],
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
