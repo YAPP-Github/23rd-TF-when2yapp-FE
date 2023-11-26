@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'api/dto/schedule_response.dart';
@@ -6,7 +8,6 @@ import 'util/date_time_utils.dart';
 import 'resources/resources.dart';
 
 class SchedulePageWidget extends StatefulWidget {
-
   final int scheduleId;
   final When2YappApiClient _apiClient = When2YappApiClient();
 
@@ -32,7 +33,16 @@ class SchedulePage extends State<SchedulePageWidget> {
     return SafeArea(
       child: Scaffold(
           backgroundColor: const Color(0xFFF5F5F8),
-          appBar: AppBar(),
+          appBar: AppBar(
+            leading: BackButton(
+              onPressed: () {
+                if (kIsWeb) {
+                  html.window.history.back();
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
           body: Column(
             children: [
               Container(
@@ -137,8 +147,8 @@ class SchedulePage extends State<SchedulePageWidget> {
               endDate: scheduleResponse.endDate,
             ),
             timeRangeText: DateTimeUtils.getFormattedTimeRangeText(
-                startTime: scheduleResponse.startTime,
-                endTime: scheduleResponse.endTime,
+              startTime: scheduleResponse.startTime,
+              endTime: scheduleResponse.endTime,
             ),
           );
         }
@@ -153,8 +163,7 @@ class SchedulePage extends State<SchedulePageWidget> {
   }) {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      padding:
-      const EdgeInsets.symmetric(horizontal: 26, vertical: 22),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 22),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -211,8 +220,12 @@ class SchedulePage extends State<SchedulePageWidget> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pushNamed(
-          '/schedule/${widget.scheduleId}/register/${selectedScheduleResponse.id}');
+      final url =
+          '/schedule/${widget.scheduleId}/register/${selectedScheduleResponse.id}';
+      if (kIsWeb) {
+        html.window.history.pushState(null, '언제얍', url);
+      }
+      Navigator.of(context).pushNamed(url);
     };
   }
 }

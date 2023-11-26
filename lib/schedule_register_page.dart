@@ -1,3 +1,4 @@
+import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -29,14 +30,24 @@ class _ScheduleRegisterPageState extends State<ScheduleRegisterPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () {
+              if (kIsWeb) {
+                html.window.history.back();
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         body: _fetchDataAndBuild(),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             if (kDebugMode) {
               print(selectedDateTimesNotifier.value);
             }
-            final availabilities = await widget._apiClient.registerAvailabilities(
+            final availabilities =
+                await widget._apiClient.registerAvailabilities(
               scheduleId: widget.scheduleId,
               selectedScheduleId: widget.selectedScheduleId,
               selectedDateTimes: selectedDateTimesNotifier.value,
@@ -47,8 +58,12 @@ class _ScheduleRegisterPageState extends State<ScheduleRegisterPage> {
             if (!mounted) {
               return;
             }
-            Navigator.of(context)
-                .pushNamed('/schedule/${widget.scheduleId}/detail/${widget.selectedScheduleId}');
+            final url =
+                '/schedule/${widget.scheduleId}/detail/${widget.selectedScheduleId}';
+            if (kIsWeb) {
+              html.window.history.pushState(null, '언제얍', url);
+            }
+            Navigator.of(context).pushNamed(url);
           },
           tooltip: '일정 등록하기',
           child: const Icon(Icons.chevron_right),

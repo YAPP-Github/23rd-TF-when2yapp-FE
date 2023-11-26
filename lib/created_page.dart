@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:when2yapp/api/when2yapp_api_client.dart';
 import 'package:when2yapp/component/dash_widget.dart';
@@ -20,7 +22,16 @@ class CreatedPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F5F8),
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () {
+              if (kIsWeb) {
+                html.window.history.back();
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         body: Column(children: [
           const Center(
               child: Text(
@@ -54,6 +65,7 @@ class CreatedPage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 14),
             child: TextButton(
               onPressed: () {
+                // FIXME: url 클립보드에 복사
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('복사되었습니다.')),
                 );
@@ -77,7 +89,11 @@ class CreatedPage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 60),
             child: OutlinedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/schedule/$scheduleId');
+                final url = '/schedule/$scheduleId';
+                if (kIsWeb) {
+                  html.window.history.pushState(null, '언제얍', url);
+                }
+                Navigator.of(context).pushNamed(url);
               },
               style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFFFA6027),
@@ -160,8 +176,7 @@ class CreatedPage extends StatelessWidget {
                           fontSize: 16,
                           color: Color(0xFFA09DA5))),
                   const SizedBox(width: 18),
-                  Text(
-                      formattedTimeRange,
+                  Text(formattedTimeRange,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
@@ -175,8 +190,8 @@ class CreatedPage extends StatelessWidget {
 
   String _getFormattedDateRange(DateTime startDate, DateTime endDate) {
     return DateTimeUtils.getFormattedDateRangeText(
-        startDate: startDate,
-        endDate: endDate,
+      startDate: startDate,
+      endDate: endDate,
     );
   }
 }
