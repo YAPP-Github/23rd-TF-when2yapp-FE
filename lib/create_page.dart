@@ -1,3 +1,4 @@
+import 'dart:html' as html;
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,16 @@ class CreatePageState extends State<CreatePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () {
+              if (kIsWeb) {
+                html.window.history.back();
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -110,8 +120,11 @@ class CreatePageState extends State<CreatePage> {
             if (kDebugMode) {
               print('schedule: $scheduleResponse');
             }
-            Navigator.of(context)
-                .pushNamed('/schedule/${scheduleResponse.id}/created');
+            final url = '/schedule/${scheduleResponse.id}/created';
+            if (kIsWeb) {
+              html.window.history.pushState(null, '언제얍', url);
+            }
+            Navigator.of(context).pushNamed(url);
           },
           tooltip: '약속 만들기',
           child: const Icon(Icons.chevron_right),

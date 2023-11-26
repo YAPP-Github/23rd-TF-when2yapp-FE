@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'resources/resources.dart';
@@ -53,6 +55,9 @@ class SplashPage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 60),
             child: TextButton(
               onPressed: () {
+                if (kIsWeb) {
+                  html.window.history.pushState(null, 'Page', '/create');
+                }
                 Navigator.of(context).pushNamed('/create');
               },
               style: TextButton.styleFrom(

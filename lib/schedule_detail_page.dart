@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'api/dto/schedule_response.dart';
@@ -22,7 +24,16 @@ class ScheduleDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () {
+              if (kIsWeb) {
+                html.window.history.back();
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         body: _fetchDataAndBuild(),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -40,8 +51,11 @@ class ScheduleDetailPage extends StatelessWidget {
             ),
             FloatingActionButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamed('/schedule/$scheduleId/register');
+                final url = '/schedule/$scheduleId/register';
+                if (kIsWeb) {
+                  html.window.history.pushState(null, '언제얍', url);
+                }
+                Navigator.of(context).pushNamed(url);
               },
               tooltip: '내 일정 수정하기',
               child: const Icon(Icons.edit),
