@@ -1,6 +1,7 @@
-import 'dart:html' as html;
+import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:when2yapp/api/when2yapp_api_client.dart';
 import 'package:when2yapp/component/dash_widget.dart';
 
@@ -26,7 +27,7 @@ class CreatedPage extends StatelessWidget {
           leading: BackButton(
             onPressed: () {
               if (kIsWeb) {
-                html.window.history.back();
+                window.history.back();
               }
               Navigator.of(context).pop();
             },
@@ -65,7 +66,9 @@ class CreatedPage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 14),
             child: TextButton(
               onPressed: () {
-                // FIXME: url 클립보드에 복사
+                if (kIsWeb) {
+                  Clipboard.setData(ClipboardData(text: window.location.href));
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('복사되었습니다.')),
                 );
@@ -91,7 +94,7 @@ class CreatedPage extends StatelessWidget {
               onPressed: () {
                 final url = '/schedule/$scheduleId';
                 if (kIsWeb) {
-                  html.window.history.pushState(null, '언제얍', url);
+                  window.history.pushState(null, '언제얍', url);
                 }
                 Navigator.of(context).pushNamed(url);
               },
