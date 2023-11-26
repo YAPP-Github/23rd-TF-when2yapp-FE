@@ -1,6 +1,7 @@
-import 'dart:html' as html;
+import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'api/dto/schedule_response.dart';
 import 'api/when2yapp_api_client.dart';
@@ -28,7 +29,7 @@ class ScheduleDetailPage extends StatelessWidget {
           leading: BackButton(
             onPressed: () {
               if (kIsWeb) {
-                html.window.history.back();
+                window.history.back();
               }
               Navigator.of(context).pop();
             },
@@ -40,6 +41,9 @@ class ScheduleDetailPage extends StatelessWidget {
           children: [
             FloatingActionButton(
               onPressed: () {
+                if (kIsWeb) {
+                  Clipboard.setData(ClipboardData(text: window.location.href));
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('복사되었습니다.'),
@@ -53,7 +57,7 @@ class ScheduleDetailPage extends StatelessWidget {
               onPressed: () {
                 final url = '/schedule/$scheduleId/register';
                 if (kIsWeb) {
-                  html.window.history.pushState(null, '언제얍', url);
+                  window.history.pushState(null, '언제얍', url);
                 }
                 Navigator.of(context).pushNamed(url);
               },
