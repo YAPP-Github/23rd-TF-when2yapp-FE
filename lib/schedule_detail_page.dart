@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 
 import 'api/dto/schedule_response.dart';
 import 'api/when2yapp_api_client.dart';
+import 'component/when2yapp_elevated_button.dart';
+import 'component/when2yapp_outlined_button.dart';
 import 'component/when2yapp_time_table.dart';
 
 class ScheduleDetailPage extends StatelessWidget {
@@ -39,35 +41,38 @@ class ScheduleDetailPage extends StatelessWidget {
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton(
-              onPressed: () {
-                if (kIsWeb) {
-                  Clipboard.setData(ClipboardData(text: window.location.href));
-                }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('복사되었습니다.'),
-                  ),
-                );
-              },
-              tooltip: '결과 공유하기',
-              child: const Icon(Icons.share),
+            When2YappElevatedButton(
+              onPressed: () => _onShareButtonPressed(context),
+              labelText: '결과 공유하기',
             ),
-            FloatingActionButton(
-              onPressed: () {
-                final url = '/schedule/$scheduleId/register';
-                if (kIsWeb) {
-                  window.history.pushState(null, '언제얍', url);
-                }
-                Navigator.of(context).pushNamed(url);
-              },
-              tooltip: '내 일정 수정하기',
-              child: const Icon(Icons.edit),
+            const SizedBox(height: 14),
+            When2YappOutlinedButton(
+              onPressed: () => _onEditButtonPressed(context),
+              labelText: '내 일정 수정하기',
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _onShareButtonPressed(BuildContext context) {
+    if (kIsWeb) {
+      Clipboard.setData(ClipboardData(text: window.location.href));
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('복사되었습니다.'),
+      ),
+    );
+  }
+
+  void _onEditButtonPressed(BuildContext context) {
+    final url = '/schedule/$scheduleId/register/$selectedScheduleId';
+    if (kIsWeb) {
+      window.history.pushState(null, '언제얍', url);
+    }
+    Navigator.of(context).pushNamed(url);
   }
 
   Widget _fetchDataAndBuild() {
@@ -120,6 +125,7 @@ class ScheduleDetailPage extends StatelessWidget {
               selectedDateTimesNotifier: selectedDateTimesNotifier,
               selectedDateTimes: selectedDateTimes,
             ),
+            const SizedBox(height: 160,),
           ],
         ),
       ),

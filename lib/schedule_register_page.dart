@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'api/dto/schedule_response.dart';
 import 'api/when2yapp_api_client.dart';
+import 'component/when2yapp_elevated_button.dart';
 import 'component/when2yapp_time_table.dart';
 
 class ScheduleRegisterPage extends StatefulWidget {
@@ -41,35 +42,36 @@ class _ScheduleRegisterPageState extends State<ScheduleRegisterPage> {
           ),
         ),
         body: _fetchDataAndBuild(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            if (kDebugMode) {
-              print(selectedDateTimesNotifier.value);
-            }
-            final availabilities =
-                await widget._apiClient.registerAvailabilities(
-              scheduleId: widget.scheduleId,
-              selectedScheduleId: widget.selectedScheduleId,
-              selectedDateTimes: selectedDateTimesNotifier.value,
-            );
-            if (kDebugMode) {
-              print(availabilities);
-            }
-            if (!mounted) {
-              return;
-            }
-            final url =
-                '/schedule/${widget.scheduleId}/detail/${widget.selectedScheduleId}';
-            if (kIsWeb) {
-              html.window.history.pushState(null, '언제얍', url);
-            }
-            Navigator.of(context).pushNamed(url);
-          },
-          tooltip: '일정 등록하기',
-          child: const Icon(Icons.chevron_right),
+        floatingActionButton: When2YappElevatedButton(
+          onPressed: _onButtonPressed,
+          labelText: '일정 등록하기',
         ),
       ),
     );
+  }
+
+  void _onButtonPressed() async {
+    if (kDebugMode) {
+      print(selectedDateTimesNotifier.value);
+    }
+    final availabilities =
+    await widget._apiClient.registerAvailabilities(
+      scheduleId: widget.scheduleId,
+      selectedScheduleId: widget.selectedScheduleId,
+      selectedDateTimes: selectedDateTimesNotifier.value,
+    );
+    if (kDebugMode) {
+      print(availabilities);
+    }
+    if (!mounted) {
+      return;
+    }
+    final url =
+        '/schedule/${widget.scheduleId}/detail/${widget.selectedScheduleId}';
+    if (kIsWeb) {
+      html.window.history.pushState(null, '언제얍', url);
+    }
+    Navigator.of(context).pushNamed(url);
   }
 
   Widget _fetchDataAndBuild() {
@@ -109,6 +111,7 @@ class _ScheduleRegisterPageState extends State<ScheduleRegisterPage> {
               isEditable: true,
               selectedDateTimesNotifier: selectedDateTimesNotifier,
             ),
+            const SizedBox(height: 80),
           ],
         ),
       ),
