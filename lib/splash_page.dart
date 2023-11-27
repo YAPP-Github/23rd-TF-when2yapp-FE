@@ -2,6 +2,7 @@ import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'component/when2yapp_elevated_button.dart';
 import 'resources/resources.dart';
 
 class SplashPage extends StatelessWidget {
@@ -49,29 +50,19 @@ class SplashPage extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            width: double.infinity,
-            height: 56,
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 60),
-            child: TextButton(
-              onPressed: () {
-                if (kIsWeb) {
-                  html.window.history.pushState(null, 'Page', '/create');
-                }
-                Navigator.of(context).pushNamed('/create');
-              },
-              style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: const Color(0xFFFA6027),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // <-- Radius
-                  )),
-              child: const Text("약속 만들기",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-            ),
-          ),
         ],
       ),
+      floatingActionButton: When2YappElevatedButton(
+        onPressed: () => _onButtonPressed(context),
+        labelText: '약속 만들기',
+      ),
     );
+  }
+
+  void _onButtonPressed(BuildContext context) {
+    if (kIsWeb) {
+      html.window.history.pushState(null, '언제얍', '/create');
+    }
+    Navigator.of(context).pushNamed('/create');
   }
 }

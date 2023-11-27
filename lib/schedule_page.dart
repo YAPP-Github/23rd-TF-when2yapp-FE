@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'api/dto/schedule_response.dart';
 import 'api/when2yapp_api_client.dart';
+import 'component/when2yapp_elevated_button.dart';
 import 'util/date_time_utils.dart';
 import 'resources/resources.dart';
 
@@ -75,8 +76,7 @@ class SchedulePage extends State<SchedulePageWidget> {
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -108,30 +108,17 @@ class SchedulePage extends State<SchedulePageWidget> {
               Align(
                 alignment: AlignmentDirectional.bottomEnd,
                 child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 18, 30),
-                    child: Image.asset(Images.yappucalendar)),
-              ),
-              Container(
-                width: double.infinity,
-                height: 56,
-                margin: const EdgeInsets.fromLTRB(20, 0, 20, 60),
-                child: TextButton(
-                  onPressed: _onRegisterButtonPressed(),
-                  style: TextButton.styleFrom(
-                      disabledBackgroundColor: const Color(0xFFEEECF3),
-                      disabledForegroundColor: const Color(0xFFA09DA5),
-                      foregroundColor: Colors.white,
-                      backgroundColor: const Color(0xFFFA6027),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // <-- Radius
-                      )),
-                  child: const Text("일정 등록하기",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                  margin: const EdgeInsets.fromLTRB(0, 0, 18, 145),
+                  child: Image.asset(Images.yappucalendar),
                 ),
               ),
             ],
-          )),
+          ),
+        floatingActionButton: When2YappElevatedButton(
+          onPressed: _onRegisterButtonPressed(),
+          labelText: '일정 등록하기',
+        ),
+      ),
     );
   }
 

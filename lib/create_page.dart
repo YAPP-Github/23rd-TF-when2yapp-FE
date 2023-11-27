@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'api/when2yapp_api_client.dart';
 import 'component/when2yapp_checkbox.dart';
+import 'component/when2yapp_elevated_button.dart';
 
 class CreatePage extends StatefulWidget {
   final When2YappApiClient _apiClient = When2YappApiClient();
@@ -106,31 +107,33 @@ class CreatePageState extends State<CreatePage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            final scheduleResponse = await widget._apiClient.createSchedule(
-              startDate: _rangeDatePickerValueWithDefaultValue[0]!,
-              endDate: _rangeDatePickerValueWithDefaultValue[1]!,
-              startTime: '10:00:00',
-              endTime: '22:00:00',
-            );
-            if (!mounted) {
-              return;
-            }
-            if (kDebugMode) {
-              print('schedule: $scheduleResponse');
-            }
-            final url = '/schedule/${scheduleResponse.id}/created';
-            if (kIsWeb) {
-              html.window.history.pushState(null, '언제얍', url);
-            }
-            Navigator.of(context).pushNamed(url);
-          },
-          tooltip: '약속 만들기',
-          child: const Icon(Icons.chevron_right),
+        floatingActionButton: When2YappElevatedButton(
+          onPressed: _onButtonPressed,
+          labelText: '약속 만들기',
         ),
       ),
     );
+  }
+
+  /// 약속 만들기
+  void _onButtonPressed() async {
+    final scheduleResponse = await widget._apiClient.createSchedule(
+      startDate: _rangeDatePickerValueWithDefaultValue[0]!,
+      endDate: _rangeDatePickerValueWithDefaultValue[1]!,
+      startTime: '10:00:00',
+      endTime: '22:00:00',
+    );
+    if (!mounted) {
+      return;
+    }
+    if (kDebugMode) {
+      print('schedule: $scheduleResponse');
+    }
+    final url = '/schedule/${scheduleResponse.id}/created';
+    if (kIsWeb) {
+      html.window.history.pushState(null, '언제얍', url);
+    }
+    Navigator.of(context).pushNamed(url);
   }
 
   Widget _buildDefaultRangeDatePickerWithValue() {
