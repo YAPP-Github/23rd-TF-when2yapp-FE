@@ -1,4 +1,6 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'create_page.dart';
 import 'created_page.dart';
@@ -151,6 +153,11 @@ class When2YappApp extends StatelessWidget {
         throw Exception(
             '\'settings.name\' is not valid. name: ${settings.name}');
       },
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(
+          analytics: Provider.of<FirebaseAnalytics>(context),
+        ),
+      ],
     );
   }
 }
