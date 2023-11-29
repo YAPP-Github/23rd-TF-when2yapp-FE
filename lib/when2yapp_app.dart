@@ -101,11 +101,13 @@ class When2YappApp extends StatelessWidget {
         if (settings.name == null || settings.name == '/') {
           return MaterialPageRoute(
             builder: (context) => SplashPage(),
+            settings: settings,
           );
         }
         if (settings.name! == '/create') {
           return MaterialPageRoute(
             builder: (context) => CreatePage(),
+            settings: settings,
           );
         }
         if (scheduleCreatedPagePattern.hasMatch(settings.name!)) {
@@ -117,6 +119,7 @@ class When2YappApp extends StatelessWidget {
             builder: (context) => CreatedPage(
               scheduleId: scheduleId,
             ),
+            settings: settings,
           );
         }
         if (schedulePagePattern.hasMatch(settings.name!)) {
@@ -126,6 +129,7 @@ class When2YappApp extends StatelessWidget {
             builder: (context) => SchedulePageWidget(
               scheduleId: scheduleId,
             ),
+            settings: settings,
           );
         }
         if (scheduleRegisterPagePattern.hasMatch(settings.name!)) {
@@ -136,6 +140,7 @@ class When2YappApp extends StatelessWidget {
               scheduleId: int.parse(matches.group(1)!),
               selectedScheduleId: int.parse(matches.group(2)!),
             ),
+            settings: settings,
           );
         }
         if (scheduleDetailPagePattern.hasMatch(settings.name!)) {
@@ -146,6 +151,7 @@ class When2YappApp extends StatelessWidget {
               scheduleId: int.parse(matches.group(1)!),
               selectedScheduleId: int.parse(matches.group(2)!),
             ),
+            settings: settings,
           );
         }
         throw Exception(
