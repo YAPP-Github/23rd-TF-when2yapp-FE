@@ -1,4 +1,6 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'create_page.dart';
 import 'created_page.dart';
@@ -14,7 +16,8 @@ class When2YappApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheduleCreatedPagePattern = RegExp(r'^/schedule/(\d+)/created$');
     final schedulePagePattern = RegExp(r'^/schedule/(\d+)$');
-    final scheduleRegisterPagePattern = RegExp(r'^/schedule/(\d+)/register/(\d+)$');
+    final scheduleRegisterPagePattern =
+        RegExp(r'^/schedule/(\d+)/register/(\d+)$');
     final scheduleDetailPagePattern = RegExp(r'^/schedule/(\d+)/detail/(\d+)$');
 
     return MaterialApp(
@@ -28,22 +31,23 @@ class When2YappApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith((states) =>
-              states.contains(MaterialState.selected)
-                  ? const Color(0xFFFA6027)
-                  : const Color(0xFFDBDBDB)),
+          fillColor: MaterialStateProperty.resolveWith(
+            (states) => states.contains(MaterialState.selected)
+                ? const Color(0xFFFA6027)
+                : const Color(0xFFDBDBDB),
+          ),
           checkColor: MaterialStateProperty.all(Colors.white),
           side: BorderSide.none,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                states.contains(MaterialState.disabled)
-                    ? const Color(0xFFEEECF3)
-                    : const Color(0xFFFA6027)
+            backgroundColor: MaterialStateProperty.resolveWith(
+              (states) => states.contains(MaterialState.disabled)
+                  ? const Color(0xFFEEECF3)
+                  : const Color(0xFFFA6027),
             ),
-            foregroundColor: MaterialStateProperty.resolveWith((states) =>
-              states.contains(MaterialState.disabled)
+            foregroundColor: MaterialStateProperty.resolveWith(
+              (states) => states.contains(MaterialState.disabled)
                   ? const Color(0xFFA09DA5)
                   : Colors.white,
             ),
@@ -63,15 +67,15 @@ class When2YappApp extends StatelessWidget {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                states.contains(MaterialState.disabled)
-                    ? const Color(0xFFEEECF3)
-                    : Colors.white
+            backgroundColor: MaterialStateProperty.resolveWith(
+              (states) => states.contains(MaterialState.disabled)
+                  ? const Color(0xFFEEECF3)
+                  : Colors.white,
             ),
-            foregroundColor: MaterialStateProperty.resolveWith((states) =>
-                states.contains(MaterialState.disabled)
-                    ? const Color(0xFFA09DA5)
-                    : const Color(0xFFFA6027)
+            foregroundColor: MaterialStateProperty.resolveWith(
+              (states) => states.contains(MaterialState.disabled)
+                  ? const Color(0xFFA09DA5)
+                  : const Color(0xFFFA6027),
             ),
             textStyle: MaterialStateProperty.all(const TextStyle(
               fontSize: 17,
@@ -97,11 +101,13 @@ class When2YappApp extends StatelessWidget {
         if (settings.name == null || settings.name == '/') {
           return MaterialPageRoute(
             builder: (context) => SplashPage(),
+            settings: settings,
           );
         }
         if (settings.name! == '/create') {
           return MaterialPageRoute(
             builder: (context) => CreatePage(),
+            settings: settings,
           );
         }
         if (scheduleCreatedPagePattern.hasMatch(settings.name!)) {
@@ -113,44 +119,49 @@ class When2YappApp extends StatelessWidget {
             builder: (context) => CreatedPage(
               scheduleId: scheduleId,
             ),
+            settings: settings,
           );
         }
         if (schedulePagePattern.hasMatch(settings.name!)) {
-          final scheduleId = int.parse(schedulePagePattern
-              .allMatches(settings.name!)
-              .first
-              .group(1)!);
+          final scheduleId = int.parse(
+              schedulePagePattern.allMatches(settings.name!).first.group(1)!);
           return MaterialPageRoute(
             builder: (context) => SchedulePageWidget(
               scheduleId: scheduleId,
             ),
+            settings: settings,
           );
         }
         if (scheduleRegisterPagePattern.hasMatch(settings.name!)) {
-          final matches = scheduleRegisterPagePattern
-              .allMatches(settings.name!)
-              .first;
+          final matches =
+              scheduleRegisterPagePattern.allMatches(settings.name!).first;
           return MaterialPageRoute(
             builder: (context) => ScheduleRegisterPage(
               scheduleId: int.parse(matches.group(1)!),
               selectedScheduleId: int.parse(matches.group(2)!),
             ),
+            settings: settings,
           );
         }
         if (scheduleDetailPagePattern.hasMatch(settings.name!)) {
-          final matches = scheduleDetailPagePattern
-              .allMatches(settings.name!)
-              .first;
+          final matches =
+              scheduleDetailPagePattern.allMatches(settings.name!).first;
           return MaterialPageRoute(
             builder: (context) => ScheduleDetailPage(
               scheduleId: int.parse(matches.group(1)!),
               selectedScheduleId: int.parse(matches.group(2)!),
             ),
+            settings: settings,
           );
         }
         throw Exception(
             '\'settings.name\' is not valid. name: ${settings.name}');
       },
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(
+          analytics: Provider.of<FirebaseAnalytics>(context),
+        ),
+      ],
     );
   }
 }
