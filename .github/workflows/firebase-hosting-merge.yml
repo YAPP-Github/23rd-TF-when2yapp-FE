@@ -27,6 +27,7 @@ jobs:
           retention-days: 7
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
