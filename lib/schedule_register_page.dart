@@ -101,8 +101,26 @@ class _ScheduleRegisterPageState extends State<ScheduleRegisterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-                '${startDate.month}월${startDate.day}일부터 ${endDate.day}일까지\n가능하신 일정을 선택해주세요'),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: '${startDate.month}월${startDate.day}일부터 ${endDate.day}일',
+                    style: const TextStyle(
+                      color: Color(0xFFFA6027),
+                    ),
+                  ),
+                  const TextSpan(
+                    text: '까지\n가능하신 일정을 선택해주세요.',
+                  ),
+                ]
+              ),
+            ),
+            const SizedBox(height: 20),
             When2YappTimeTable(
               dateTimes: [
                 for (var i = 0; i <= endDate.difference(startDate).inDays; i++)

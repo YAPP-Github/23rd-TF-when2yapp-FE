@@ -118,7 +118,24 @@ class ScheduleDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$numberOfPeople명의 만날 수 있는 시간이에요.'),
+            RichText(text: TextSpan(
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              children: [
+                TextSpan(
+                  text: '$numberOfPeople명',
+                  style: const TextStyle(
+                    color: Color(0xFFFA6027),
+                  ),
+                ),
+                const TextSpan(
+                  text: '의 만날 수 있는 시간이에요.',
+                ),
+              ],
+            ),),
+            const SizedBox(height: 20,),
             When2YappTimeTable(
               dateTimes: dateTimes,
               isEditable: false,
