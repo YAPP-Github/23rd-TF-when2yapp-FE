@@ -257,6 +257,7 @@ class _When2YappTimeTableCellState extends State<_When2YappTimeTableCell> {
         onTapDown: (_) {
           setState(() {
             selected = !selected;
+            widget.updateSelectedDateTimesCallback?.call(widget.startTime);
           });
         },
         child: SizedBox(
