@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'api/when2yapp_api_client.dart';
 import 'component/when2yapp_checkbox.dart';
 import 'component/when2yapp_elevated_button.dart';
+import 'util/date_time_utils.dart';
 
 class CreatePage extends StatefulWidget {
   final When2YappApiClient _apiClient = When2YappApiClient();
@@ -15,17 +16,15 @@ class CreatePage extends StatefulWidget {
       timeSlotName: '아침',
       range: DateTimeRange(
         start: DateTime.now().copyWith(hour: 7, minute: 0, second: 0),
-        end: DateTime.now().copyWith(hour: 11, minute: 0, second: 0),
+        end: DateTime.now().copyWith(hour: 12, minute: 0, second: 0),
       ),
-      isSelected: false,
     ),
     TimeOption(
       timeSlotName: '낮',
       range: DateTimeRange(
         start: DateTime.now().copyWith(hour: 12, minute: 0, second: 0),
-        end: DateTime.now().copyWith(hour: 17, minute: 0, second: 0),
+        end: DateTime.now().copyWith(hour: 18, minute: 0, second: 0),
       ),
-      isSelected: false,
     ),
     TimeOption(
       timeSlotName: '저녁',
@@ -33,22 +32,19 @@ class CreatePage extends StatefulWidget {
         start: DateTime.now().copyWith(hour: 18, minute: 0, second: 0),
         end: DateTime.now().copyWith(hour: 22, minute: 0, second: 0),
       ),
-      isSelected: false,
     ),
     TimeOption(
       timeSlotName: '밤',
       range: DateTimeRange(
-        start: DateTime.now().copyWith(hour: 23, minute: 0, second: 0),
+        start: DateTime.now().copyWith(hour: 22, minute: 0, second: 0),
         end: DateTime.now()
             .copyWith(hour: 02, minute: 0, second: 0)
             .add(const Duration(days: 1)),
       ),
-      isSelected: false,
     ),
     TimeOption(
       timeSlotName: '',
       range: null,
-      isSelected: false,
     ),
   ];
 
@@ -62,6 +58,7 @@ class CreatePageState extends State<CreatePage> {
   final DateTime _today = DateTime.now()
       .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
   List<DateTime?> _rangeDatePickerValueWithDefaultValue = [];
+  List<TimeOption> _selectedTimeOptions = [];
 
   @override
   void initState() {
@@ -120,8 +117,22 @@ class CreatePageState extends State<CreatePage> {
     final scheduleResponse = await widget._apiClient.createSchedule(
       startDate: _rangeDatePickerValueWithDefaultValue[0]!,
       endDate: _rangeDatePickerValueWithDefaultValue[1]!,
-      startTime: '10:00:00',
-      endTime: '22:00:00',
+      startTime: _selectedTimeOptions.isEmpty
+          ? '07:00:00'
+          : _selectedTimeOptions
+              .map((e) => e.startTime)
+              .where((e) => e != null)
+              .map((e) => DateTimeUtils.getFormattedTime(dateTime: e!))
+              .reduce((value, element) =>
+                  value.compareTo(element) < 0 ? value : element),
+      endTime: _selectedTimeOptions.isEmpty
+          ? '22:00:00'
+          : _selectedTimeOptions
+              .map((e) => e.endTime)
+              .where((e) => e != null)
+              .map((e) => DateTimeUtils.getFormattedTime(dateTime: e!))
+              .reduce((value, element) =>
+                  value.compareTo(element) > 0 ? value : element),
     );
     if (!mounted) {
       return;
@@ -204,9 +215,20 @@ class CreatePageState extends State<CreatePage> {
     );
   }
 
-  Widget _buildTimeSelector({required TimeOption timeOption}) {
+  Widget _buildTimeSelector({
+    required TimeOption timeOption,
+  }) {
     return When2YappCheckBox(
       textLabel: timeOption.getFormattedText(),
+      onChanged: (selected) {
+        setState(() {
+          if (selected == true) {
+            _selectedTimeOptions.add(timeOption);
+          } else {
+            _selectedTimeOptions.remove(timeOption);
+          }
+        });
+      },
     );
   }
 }
@@ -214,17 +236,15 @@ class CreatePageState extends State<CreatePage> {
 class TimeOption {
   String timeSlotName;
   DateTimeRange? range;
-  bool isSelected;
 
   TimeOption({
     required this.timeSlotName,
     required this.range,
-    required this.isSelected,
   });
 
-  toggleSelected() {
-    isSelected = !isSelected;
-  }
+  DateTime? get startTime => range?.start;
+
+  DateTime? get endTime => range?.end;
 
   String getFormattedText() {
     if (range == null) {

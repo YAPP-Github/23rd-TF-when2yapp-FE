@@ -41,4 +41,10 @@ class DateTimeUtils {
   }) {
     return '${startTime.substring(0, 5)} - ${endTime.substring(0, 5)}';
   }
+
+  static String getFormattedTime({
+    required DateTime dateTime,
+  }) {
+    return DateFormat('HH:mm:ss').format(dateTime);
+  }
 }
