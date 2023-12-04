@@ -4,10 +4,12 @@ class When2YappCheckBox extends StatefulWidget {
   final Color textColor = const Color(0xFFA09DA5);
   final Color selectedTextColor = Colors.black;
   final String textLabel;
+  final ValueChanged<bool?> onChanged;
 
   const When2YappCheckBox({
     super.key,
     required this.textLabel,
+    required this.onChanged,
   });
 
   @override
@@ -31,6 +33,7 @@ class When2YappCheckBoxState extends State<When2YappCheckBox> {
       onTapUp: (_) {
         setState(() {
           _isSelected = !_isSelected;
+          widget.onChanged(_isSelected);
         });
       },
       child: Container(
