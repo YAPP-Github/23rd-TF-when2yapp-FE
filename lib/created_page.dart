@@ -2,6 +2,7 @@ import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 import 'api/dto/schedule_response.dart';
 import 'api/when2yapp_api_client.dart';
@@ -92,8 +93,15 @@ class CreatedPage extends StatelessWidget {
     if (kIsWeb) {
       Clipboard.setData(ClipboardData(text: window.location.href));
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('복사되었습니다.')),
+    showToast(
+      '복사되었습니다.',
+      context: context,
+      animation: StyledToastAnimation.fade,
+      reverseAnimation: StyledToastAnimation.fade,
+      position: const StyledToastPosition(align: Alignment.bottomCenter, offset: 215.0),
+      borderRadius: BorderRadius.circular(10.0),
+      textStyle: const TextStyle(fontSize: 16.0, color: Color(0xFFFA6027)),
+      backgroundColor: const Color(0xFFFEDFD4)
     );
   }
 
